@@ -1,6 +1,8 @@
 spring:
   application:
     name: smart-home-iot
+  config:
+    import: optional:file:.env[.properties]
 
   jpa:
     hibernate:
@@ -15,3 +17,9 @@ server:
 
   profiles:
     active: local
+
+
+jwt:
+  header: Authorization
+  secret: ${JWT_SECRET_KEY}
+  expiration: 36000
