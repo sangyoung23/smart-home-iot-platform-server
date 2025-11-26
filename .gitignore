@@ -42,4 +42,5 @@ out/
 .DS_Store
 
 application-local.yml
-application-prod.yml
+application-prod.yml/.gradle/
+/build/
