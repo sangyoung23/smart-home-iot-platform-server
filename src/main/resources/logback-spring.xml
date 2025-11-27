@@ -1,67 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <!-- 로그 출력 형식 -->
     <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n"/>
-
-    <!-- logs 디렉토리 -->
     <property name="LOG_PATH" value="/app/logs"/>
 
-    <!-- =========== 1) app.log =========== -->
+    <!-- APP 로그 -->
     <appender name="APP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH}/app.log</file>
-        <encoder>
-            <pattern>${LOG_PATTERN}</pattern>
-        </encoder>
+        <encoder><pattern>${LOG_PATTERN}</pattern></encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_PATH}/app.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
     </appender>
 
-    <!-- =========== 2) api.log =========== -->
+    <!-- API 로그 -->
     <appender name="API_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH}/api.log</file>
-        <encoder>
-            <pattern>${LOG_PATTERN}</pattern>
-        </encoder>
+        <encoder><pattern>${LOG_PATTERN}</pattern></encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_PATH}/api.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
     </appender>
 
-    <!-- =========== 3) error.log =========== -->
+    <!-- ERROR 로그 -->
     <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH}/error.log</file>
-        <encoder>
-            <pattern>${LOG_PATTERN}</pattern>
-        </encoder>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>ERROR</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
+        <encoder><pattern>${LOG_PATTERN}</pattern></encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_PATH}/error.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
     </appender>
 
-    <!-- =========== 4) audit.log =========== -->
+    <!-- AUDIT 로그 -->
     <appender name="AUDIT_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH}/audit.log</file>
-        <encoder>
-            <pattern>${LOG_PATTERN}</pattern>
-        </encoder>
+        <encoder><pattern>${LOG_PATTERN}</pattern></encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_PATH}/audit.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
     </appender>
 
-
-    <!-- 로그 라우팅을 위한 Logger -->
+    <!-- Logger 정의 -->
     <logger name="APP" level="INFO" additivity="false">
         <appender-ref ref="APP_FILE"/>
     </logger>
@@ -78,10 +61,7 @@
         <appender-ref ref="AUDIT_FILE"/>
     </logger>
 
-
-    <!-- Console 로그 -->
     <root level="INFO">
         <appender-ref ref="APP_FILE"/>
     </root>
-
 </configuration>
