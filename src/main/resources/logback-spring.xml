@@ -2,7 +2,7 @@
 <configuration>
 
     <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n"/>
-    <property name="LOG_PATH" value="/app/logs"/>
+    <property name="LOG_PATH" value="logs"/>
 
     <!-- APP 로그 -->
     <appender name="APP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
