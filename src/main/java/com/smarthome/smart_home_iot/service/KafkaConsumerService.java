@@ -13,12 +13,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public class KafkaConsumerService {
 
     private final KafkaRepository kafkaRepository;
+    private final ObjectMapper objectMapper;
 
     @KafkaListener(topics = "sensor-topic", groupId = "sensor-group")
     public void consume(String message) {
-        ObjectMapper mapper = new ObjectMapper();
         try {
-            Sensor sensor = mapper.readValue(message, Sensor.class);
+            Sensor sensor = objectMapper.readValue(message, Sensor.class);
              kafkaRepository.save(sensor);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -26,9 +26,8 @@ public class KafkaConsumerService {
     }
 
     private Sensor parseMessage(String message) {
-        ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.readValue(message, Sensor.class);
+            return objectMapper.readValue(message, Sensor.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return null;
