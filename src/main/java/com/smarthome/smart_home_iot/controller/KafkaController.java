@@ -1,6 +1,5 @@
 package com.smarthome.smart_home_iot.controller;
 
-import com.smarthome.smart_home_iot.dto.SensorResponseDto;
 //import com.smarthome.smart_home_iot.service.KafkaConsumerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
