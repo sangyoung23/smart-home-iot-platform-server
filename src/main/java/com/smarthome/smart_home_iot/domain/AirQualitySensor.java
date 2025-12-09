@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "tb_air_quality_sensor")
 @Getter @Setter
@@ -50,4 +52,7 @@ public class AirQualitySensor {
     @Column(nullable = false)
     @Min(0) @Max(1000)
     private int smokeLevel; // 연기 농도
+
+    @Column(nullable = false)
+    private LocalDateTime timestamp; // 데이터가 측정된 시간
 }
