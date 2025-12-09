@@ -2,10 +2,11 @@ package com.smarthome.smart_home_iot.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.smarthome.smart_home_iot.domain.PowerSensor;
+import com.smarthome.smart_home_iot.document.PowerDocument;
 import com.smarthome.smart_home_iot.dto.kafka.PowerKafkaMessageDto;
-import com.smarthome.smart_home_iot.repository.PowerSensorRepository;
+import com.smarthome.smart_home_iot.repository.mongo.PowerDocumentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -14,27 +15,34 @@ import org.springframework.stereotype.Service;
 public class PowerService {
 
     private final ObjectMapper objectMapper;
-    private final PowerSensorRepository powerSensorRepository;
+    private final PowerDocumentRepository powerDocumentRepository;
+    private final StringRedisTemplate stringRedisTemplate;
 
     @KafkaListener(topics = "power-topic", groupId = "sensor-group")
     public void powerConsume(String message) {
         try {
-            PowerKafkaMessageDto powerDto =
-                    objectMapper.readValue(message, PowerKafkaMessageDto.class);
 
-            // 2) DTO → Entity 변환
-            PowerSensor powerEntity = new PowerSensor();
-            powerEntity.setDeviceId(powerDto.getDeviceId());
-            powerEntity.setPowerUsage(powerDto.getPowerUsage());
-            powerEntity.setVoltage(powerDto.getVoltage());
-            powerEntity.setCurrent(powerDto.getCurrent());
-            powerEntity.setEnergyTotal(powerDto.getEnergyTotal());
-            powerEntity.setTimestamp(powerDto.getTimestamp());
+            // 1. Kafka 메세지 DTO 직렬화
+            PowerKafkaMessageDto powerDto = objectMapper.readValue(message, PowerKafkaMessageDto.class);
 
-            // 3) DB 저장
-            powerSensorRepository.save(powerEntity);
+            // 2. MongoDB Document Raw 데이터 저장
+            PowerDocument powerDoc = new PowerDocument();
+            powerDoc.setDeviceId(powerDto.getDeviceId());
+            powerDoc.setPowerUsage(powerDto.getPowerUsage());
+            powerDoc.setVoltage(powerDto.getVoltage());
+            powerDoc.setCurrent(powerDto.getCurrent());
+            powerDoc.setEnergyTotal(powerDto.getEnergyTotal());
+            powerDoc.setTimestamp(powerDto.getTimestamp());
+
+            powerDocumentRepository.save(powerDoc);
+
+            // 3. Redis 최신 상태 저장
+            String key = "sensor:power:" + powerDto.getDeviceId();
+            String value = objectMapper.writeValueAsString(powerDto);
+            stringRedisTemplate.opsForValue().set(key, value);
+
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Power JSON Parsing Error", e);
         }
     }
 }

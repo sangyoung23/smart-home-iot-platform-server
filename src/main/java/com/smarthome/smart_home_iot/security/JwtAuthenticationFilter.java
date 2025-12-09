@@ -1,6 +1,6 @@
 package com.smarthome.smart_home_iot.security;
 
-import com.smarthome.smart_home_iot.repository.UserRepository;
+import com.smarthome.smart_home_iot.repository.jpa.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
