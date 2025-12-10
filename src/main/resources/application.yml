@@ -1,8 +1,9 @@
 spring:
   application:
     name: smart-home-iot
-  config:
-    import: optional:file:.env[.properties]
+
+  profiles:
+    active: local
 
   jpa:
     hibernate:
@@ -12,16 +13,6 @@ spring:
       hibernate:
         format_sql: true
 
-  kafka:
-    bootstrap-servers: kafka:9092
-    consumer:
-      group-id: sensor-group
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
-
-  profiles:
-    active: local
-
 server:
   servlet:
     context-path: /api
@@ -29,5 +20,4 @@ server:
 
 jwt:
   header: Authorization
-  secret: ${JWT_SECRET_KEY}
   expiration: 36000
