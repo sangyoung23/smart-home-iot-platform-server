@@ -37,9 +37,9 @@ public class PowerService {
             powerDocumentRepository.save(powerDoc);
 
             // 3. Redis 최신 상태 저장
-            String key = "sensor:power:" + powerDto.getDeviceId();
-            String value = objectMapper.writeValueAsString(powerDto);
-            stringRedisTemplate.opsForValue().set(key, value);
+//            String key = "sensor:power:" + powerDto.getDeviceId();
+//            String value = objectMapper.writeValueAsString(powerDto);
+//            stringRedisTemplate.opsForValue().set(key, value);
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Power JSON Parsing Error", e);

@@ -34,9 +34,9 @@ public class HumidityService {
             humidityDocumentRepository.save(humidityDoc);
 
             // 3. Redis 최신 상태 저장
-            String key = "sensor:humidity:" + humidityDto.getDeviceId();
-            String value = objectMapper.writeValueAsString(humidityDto);
-            stringRedisTemplate.opsForValue().set(key, value);
+//            String key = "sensor:humidity:" + humidityDto.getDeviceId();
+//            String value = objectMapper.writeValueAsString(humidityDto);
+//            stringRedisTemplate.opsForValue().set(key, value);
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Humidity JSON Parsing Error", e);
