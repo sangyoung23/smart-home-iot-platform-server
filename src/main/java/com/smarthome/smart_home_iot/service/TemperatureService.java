@@ -34,9 +34,9 @@ public class TemperatureService {
             temperatureDocumentRepository.save(tempDoc);
 
             // 3. Redis 최신 상태 저장
-            String key = "sensor:temperature:" + tempDto.getDeviceId();
-            String value = objectMapper.writeValueAsString(tempDto);
-            stringRedisTemplate.opsForValue().set(key, value);
+//            String key = "sensor:temperature:" + tempDto.getDeviceId();
+//            String value = objectMapper.writeValueAsString(tempDto);
+//            stringRedisTemplate.opsForValue().set(key, value);
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Temperature JSON Parsing Error", e);
