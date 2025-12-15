@@ -35,9 +35,9 @@ public class BatteryService {
             batteryDocumentRepository.save(batteryDoc);
 
             // 3. Redis 최신 상태 저장
-//            String key = "sensor:battery:" + batteryDto.getDeviceId();
-//            String value = objectMapper.writeValueAsString(batteryDto);
-//            stringRedisTemplate.opsForValue().set(key, value);
+            String key = "sensor:battery:" + batteryDto.getDeviceId();
+            String value = objectMapper.writeValueAsString(batteryDto);
+            stringRedisTemplate.opsForValue().set(key, value);
 
 
         } catch (JsonProcessingException e) {

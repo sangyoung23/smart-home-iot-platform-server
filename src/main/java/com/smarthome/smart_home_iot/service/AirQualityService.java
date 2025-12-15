@@ -40,9 +40,9 @@ public class AirQualityService {
             airQualityDocumentRepository.save(airQualityDoc);
 
             // 3. Redis 최신 상태 저장
-//            String key = "sensor:airQuality:" + airDto.getDeviceId();
-//            String value = objectMapper.writeValueAsString(airDto);
-//            stringRedisTemplate.opsForValue().set(key, value);
+            String key = "sensor:airQuality:" + airDto.getDeviceId();
+            String value = objectMapper.writeValueAsString(airDto);
+            stringRedisTemplate.opsForValue().set(key, value);
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException("AirQuality JSON Parsing Error", e);
