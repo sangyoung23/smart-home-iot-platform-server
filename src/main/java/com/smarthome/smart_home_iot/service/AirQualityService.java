@@ -26,16 +26,17 @@ public class AirQualityService {
             AirQualityKafkaMessageDto airDto = objectMapper.readValue(message, AirQualityKafkaMessageDto.class);
 
             // 2. MongoDB Document Raw 데이터 저장
-            AirQualityDocument airQualityDoc = new AirQualityDocument();
-            airQualityDoc.setDeviceId(airDto.getDeviceId());
-            airQualityDoc.setPm10(airDto.getPm10());
-            airQualityDoc.setPm25(airDto.getPm25());
-            airQualityDoc.setCo2(airDto.getCo2());
-            airQualityDoc.setVoc(airDto.getVoc());
-            airQualityDoc.setLight(airDto.getLight());
-            airQualityDoc.setGasLeak(airDto.isGasLeak());
-            airQualityDoc.setSmokeLevel(airDto.getSmokeLevel());
-            airQualityDoc.setTimestamp(airDto.getTimestamp());
+            AirQualityDocument airQualityDoc = AirQualityDocument.builder()
+                    .deviceId(airDto.getDeviceId())
+                    .pm10(airDto.getPm10())
+                    .pm25(airDto.getPm25())
+                    .co2(airDto.getCo2())
+                    .voc(airDto.getVoc())
+                    .light(airDto.getLight())
+                    .gasLeak(airDto.isGasLeak())
+                    .smokeLevel(airDto.getSmokeLevel())
+                    .timestamp(airDto.getTimestamp())
+                    .build();
 
             airQualityDocumentRepository.save(airQualityDoc);
 
