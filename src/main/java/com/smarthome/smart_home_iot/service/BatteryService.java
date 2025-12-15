@@ -27,10 +27,11 @@ public class BatteryService {
             BatteryKafkaMessageDto batteryDto = objectMapper.readValue(message, BatteryKafkaMessageDto.class);
 
             // 2. MongoDB Document Raw 데이터 저장
-            BatteryDocument batteryDoc = new BatteryDocument();
-            batteryDoc.setDeviceId(batteryDto.getDeviceId());
-            batteryDoc.setBattery(batteryDto.getBattery());
-            batteryDoc.setTimestamp(batteryDto.getTimestamp());
+            BatteryDocument batteryDoc = BatteryDocument.builder()
+                    .deviceId(batteryDto.getDeviceId())
+                    .battery(batteryDto.getBattery())
+                    .timestamp(batteryDto.getTimestamp())
+                    .build();
 
             batteryDocumentRepository.save(batteryDoc);
 

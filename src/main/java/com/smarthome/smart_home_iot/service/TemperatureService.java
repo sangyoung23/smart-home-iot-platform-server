@@ -26,10 +26,11 @@ public class TemperatureService {
             TemperatureKafkaMessageDto tempDto = objectMapper.readValue(message, TemperatureKafkaMessageDto.class);
 
             // 2. MongoDB Document Raw 데이터 저장
-            TemperatureDocument tempDoc = new TemperatureDocument();
-            tempDoc.setDeviceId(tempDto.getDeviceId());
-            tempDoc.setTemperature(tempDto.getTemperature());
-            tempDoc.setTimestamp(tempDto.getTimestamp());
+            TemperatureDocument tempDoc = TemperatureDocument.builder()
+                            .deviceId(tempDto.getDeviceId())
+                            .temperature(tempDto.getTemperature())
+                            .timestamp(tempDto.getTimestamp())
+                            .build();
 
             temperatureDocumentRepository.save(tempDoc);
 

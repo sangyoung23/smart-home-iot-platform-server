@@ -26,10 +26,11 @@ public class HumidityService {
             HumidityKafkaMessageDto humidityDto = objectMapper.readValue(message, HumidityKafkaMessageDto.class);
 
             // 2. MongoDB Document Raw 데이터 저장
-            HumidityDocument humidityDoc = new HumidityDocument();
-            humidityDoc.setDeviceId(humidityDto.getDeviceId());
-            humidityDoc.setHumidity(humidityDto.getHumidity());
-            humidityDoc.setTimestamp(humidityDto.getTimestamp());
+            HumidityDocument humidityDoc = HumidityDocument.builder()
+                    .deviceId(humidityDto.getDeviceId())
+                    .humidity(humidityDto.getHumidity())
+                    .timestamp(humidityDto.getTimestamp())
+                    .build();
 
             humidityDocumentRepository.save(humidityDoc);
 

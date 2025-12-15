@@ -26,13 +26,14 @@ public class PowerService {
             PowerKafkaMessageDto powerDto = objectMapper.readValue(message, PowerKafkaMessageDto.class);
 
             // 2. MongoDB Document Raw 데이터 저장
-            PowerDocument powerDoc = new PowerDocument();
-            powerDoc.setDeviceId(powerDto.getDeviceId());
-            powerDoc.setPowerUsage(powerDto.getPowerUsage());
-            powerDoc.setVoltage(powerDto.getVoltage());
-            powerDoc.setCurrent(powerDto.getCurrent());
-            powerDoc.setEnergyTotal(powerDto.getEnergyTotal());
-            powerDoc.setTimestamp(powerDto.getTimestamp());
+            PowerDocument powerDoc = PowerDocument.builder()
+                    .deviceId(powerDto.getDeviceId())
+                    .powerUsage(powerDto.getPowerUsage())
+                    .voltage(powerDto.getVoltage())
+                    .current(powerDto.getCurrent())
+                    .energyTotal(powerDto.getEnergyTotal())
+                    .timestamp(powerDto.getTimestamp())
+                    .build();
 
             powerDocumentRepository.save(powerDoc);
 
