@@ -1,6 +1,8 @@
 package com.smarthome.smart_home_iot.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,7 +17,8 @@ import java.time.LocalDateTime;
                 @UniqueConstraint(columnNames = {"device_id", "stat_date", "stat_hour"})
         }
 )
-@Getter
+@Getter @Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class TemperatureStatistics {
 
