@@ -74,6 +74,13 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 
 	// ===========================================
+	// 🔹 Batch
+	// ===========================================
+	implementation 'org.springframework.boot:spring-boot-starter-batch'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.batch:spring-batch-test'
+
+	// ===========================================
 	// 🔹 Dev Tools (개발 환경 자동 리로드)
 	// ===========================================
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
