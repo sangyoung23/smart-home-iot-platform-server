@@ -1,6 +1,6 @@
 package com.smarthome.smart_home_iot.batch.step.reader;
 
-import com.smarthome.smart_home_iot.dto.batch.HumidityAggResult;
+import com.smarthome.smart_home_iot.dto.batch.AirQualityAggResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.infrastructure.item.ItemReader;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -14,39 +14,46 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @Component
 @RequiredArgsConstructor
-public class HumidityAggReader implements ItemReader<HumidityAggResult> {
+public class AirQualityAggReader implements ItemReader<AirQualityAggResult> {
 
     private final MongoTemplate mongoTemplate;
-    private Iterator<HumidityAggResult> iterator;
+    private Iterator<AirQualityAggResult> iterator;
 
     @Override
-    public HumidityAggResult read() {
+    public AirQualityAggResult read() {
         if (iterator == null) {
             iterator = aggregate().iterator();
         }
         return iterator.hasNext() ? iterator.next() : null;
     }
 
-    private List<HumidityAggResult> aggregate() {
+    private List<AirQualityAggResult> aggregate() {
 
         Aggregation aggregation = newAggregation(
 
                 // 1️⃣ timestamp → 연/월/일/시간 추출
-                project("deviceId", "humidity", "timestamp")
+                project("deviceId", "pm10", "pm25", "co2", "voc", "light", "smokeLevel", "gasLeak", "timestamp")
                         .andExpression("year(timestamp)").as("year")
                         .andExpression("month(timestamp)").as("month")
                         .andExpression("dayOfMonth(timestamp)").as("day")
                         .andExpression("hour(timestamp)").as("hour"),
 
-                // 2️⃣ deviceId + 날짜 + 시간 기준 group
+                // 2️⃣ device + 날짜 + 시간 기준 그룹핑
                 group("deviceId", "year", "month", "day", "hour")
-                        .avg("humidity").as("avgHumidity")
-                        .min("humidity").as("minHumidity")
-                        .max("humidity").as("maxHumidity")
+                        .avg("pm10").as("avgPm10")
+                        .avg("pm25").as("avgPm25")
+                        .avg("co2").as("avgCo2")
+                        .avg("voc").as("avgVoc")
+                        .avg("light").as("avgLight")
+                        .avg("smokeLevel").as("avgSmokeLevel")
+                        .sum("gasLeak").as("gasLeakCount")
                         .count().as("sampleCount"),
 
-                // 3️⃣ 결과 매핑
-                project("avgHumidity", "minHumidity", "maxHumidity", "sampleCount")
+                // 3️⃣ 결과 필드 정리
+                project(
+                        "avgPm10", "avgPm25", "avgCo2", "avgVoc",
+                        "avgLight", "avgSmokeLevel", "gasLeakCount", "sampleCount"
+                )
                         .and("_id.deviceId").as("deviceId")
                         .andExpression(
                                 "dateFromParts({ year: _id.year, month: _id.month, day: _id.day })"
@@ -56,8 +63,8 @@ public class HumidityAggReader implements ItemReader<HumidityAggResult> {
 
         return mongoTemplate.aggregate(
                 aggregation,
-                "sensor-humidity",
-                HumidityAggResult.class
+                "sensor-air-quality",
+                AirQualityAggResult.class
         ).getMappedResults();
     }
 }
