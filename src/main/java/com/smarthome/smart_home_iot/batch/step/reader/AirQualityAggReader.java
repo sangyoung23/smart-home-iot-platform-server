@@ -5,8 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.batch.infrastructure.item.ItemReader;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.DateOperators;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,10 +35,23 @@ public class AirQualityAggReader implements ItemReader<AirQualityAggResult> {
 
                 // 1️⃣ timestamp → 연/월/일/시간 추출
                 project("deviceId", "pm10", "pm25", "co2", "voc", "light", "smokeLevel", "gasLeak", "timestamp")
-                        .andExpression("year(timestamp)").as("year")
-                        .andExpression("month(timestamp)").as("month")
-                        .andExpression("dayOfMonth(timestamp)").as("day")
-                        .andExpression("hour(timestamp)").as("hour"),
+                        .and(DateOperators.Year
+                                .yearOf("timestamp")
+                                .withTimezone(DateOperators.Timezone.valueOf("Asia/Seoul")))
+                        .as("year")
+                        .and(DateOperators.Month
+                                .monthOf("timestamp")
+                                .withTimezone(DateOperators.Timezone.valueOf("Asia/Seoul")))
+                        .as("month")
+                        .and(DateOperators.DayOfMonth
+                                .dayOfMonth("timestamp")
+                                .withTimezone(DateOperators.Timezone.valueOf("Asia/Seoul")))
+                        .as("day")
+                        .and(DateOperators.Hour
+                                .hourOf("timestamp")
+                                .withTimezone(DateOperators.Timezone.valueOf("Asia/Seoul")))
+                        .as("hour")
+                ,
 
                 // 2️⃣ device + 날짜 + 시간 기준 그룹핑
                 group("deviceId", "year", "month", "day", "hour")
@@ -55,10 +70,15 @@ public class AirQualityAggReader implements ItemReader<AirQualityAggResult> {
                         "avgLight", "avgSmokeLevel", "gasLeakCount", "sampleCount"
                 )
                         .and("_id.deviceId").as("deviceId")
-                        .andExpression(
-                                "dateFromParts({ year: _id.year, month: _id.month, day: _id.day })"
+                        .and(
+                                DateOperators.DateFromParts
+                                        .dateFromParts()
+                                        .year("$_id.year")
+                                        .month("$_id.month")
+                                        .day("$_id.day")
                         ).as("statDate")
                         .and("_id.hour").as("statHour")
+                        .andExclude("_id")
         );
 
         return mongoTemplate.aggregate(
