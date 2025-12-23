@@ -1,5 +1,6 @@
 package com.smarthome.smart_home_iot.batch.step;
 
+import com.smarthome.smart_home_iot.batch.step.listener.HumidityStepListener;
 import com.smarthome.smart_home_iot.batch.step.processor.HumidityStatisticsProcessor;
 import com.smarthome.smart_home_iot.batch.step.reader.HumidityAggReader;
 import com.smarthome.smart_home_iot.batch.step.writer.HumidityStatisticsWriter;
@@ -20,6 +21,7 @@ public class HumidityStepConfig {
     private final HumidityAggReader humidityReader;
     private final HumidityStatisticsProcessor humidityProcessor;
     private final HumidityStatisticsWriter humidityWriter;
+    private final HumidityStepListener humidityStepListener;
 
     @Bean
     public Step humidityStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
@@ -30,6 +32,7 @@ public class HumidityStepConfig {
                 .reader(humidityReader)
                 .processor(humidityProcessor)
                 .writer(humidityWriter)
+                .listener(humidityStepListener)
                 .build();
     }
 }

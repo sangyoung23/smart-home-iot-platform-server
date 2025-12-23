@@ -3,7 +3,7 @@ FROM eclipse-temurin:17-jdk
 WORKDIR /app
 
 # 로그 디렉토리 생성
-RUN mkdir -p /app/logs
+RUN mkdir -p /logs
 
 # 빌드된 jar 파일 복사
 COPY build/libs/*.jar app.jar

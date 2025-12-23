@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 
 @Document(collection = "sensor-power")
-@Getter @Builder
+@Getter @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PowerDocument {
@@ -21,4 +21,7 @@ public class PowerDocument {
     private Double current;
     private Double energyTotal;
     private LocalDateTime timestamp;
+
+    @Builder.Default
+    private boolean isProcessed = false;
 }
