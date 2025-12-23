@@ -6,6 +6,7 @@ import org.springframework.batch.infrastructure.item.ItemReader;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.DateOperators;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
@@ -31,6 +32,8 @@ public class PowerAggReader implements ItemReader<PowerAggResult> {
     private List<PowerAggResult> aggregate() {
 
         Aggregation aggregation = newAggregation(
+
+                match(Criteria.where("isProcessed").is(false)),
 
                 project("deviceId", "powerUsage", "voltage", "current", "energy", "timestamp")
                         .and(

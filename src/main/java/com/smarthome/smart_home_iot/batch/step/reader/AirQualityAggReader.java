@@ -6,6 +6,7 @@ import org.springframework.batch.infrastructure.item.ItemReader;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.DateOperators;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -32,6 +33,8 @@ public class AirQualityAggReader implements ItemReader<AirQualityAggResult> {
     private List<AirQualityAggResult> aggregate() {
 
         Aggregation aggregation = newAggregation(
+
+                match(Criteria.where("isProcessed").is(false)),
 
                 // 1️⃣ timestamp → 연/월/일/시간 추출
                 project("deviceId", "pm10", "pm25", "co2", "voc", "light", "smokeLevel", "gasLeak", "timestamp")

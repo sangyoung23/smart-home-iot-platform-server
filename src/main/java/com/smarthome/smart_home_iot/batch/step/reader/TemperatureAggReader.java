@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.batch.infrastructure.item.ItemReader;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
@@ -35,6 +36,8 @@ public class TemperatureAggReader implements ItemReader<TemperatureAggResult> {
     private List<TemperatureAggResult> aggregate() {
 
         Aggregation aggregation = newAggregation(
+
+                match(Criteria.where("isProcessed").is(false)),
 
                 project("deviceId", "temperature", "timestamp")
                         .and(
