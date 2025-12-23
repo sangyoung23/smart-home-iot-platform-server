@@ -1,5 +1,6 @@
 package com.smarthome.smart_home_iot.batch.step;
 
+import com.smarthome.smart_home_iot.batch.step.listener.TemperatureStepListener;
 import com.smarthome.smart_home_iot.batch.step.processor.TemperatureStatisticsProcessor;
 import com.smarthome.smart_home_iot.batch.step.reader.TemperatureAggReader;
 import com.smarthome.smart_home_iot.batch.step.writer.TemperatureStatisticsWriter;
@@ -20,6 +21,7 @@ public class TemperatureStepConfig {
     private final TemperatureAggReader temperatureReader;
     private final TemperatureStatisticsProcessor temperatureProcessor;
     private final TemperatureStatisticsWriter temperatureWriter;
+    private final TemperatureStepListener temperatureStepListener;
 
     @Bean
     public Step temperatureStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
@@ -30,6 +32,7 @@ public class TemperatureStepConfig {
                 .reader(temperatureReader)
                 .processor(temperatureProcessor)
                 .writer(temperatureWriter)
+                .listener(temperatureStepListener)
                 .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.smarthome.smart_home_iot.batch.step;
 
+import com.smarthome.smart_home_iot.batch.step.listener.PowerStepListener;
 import com.smarthome.smart_home_iot.batch.step.processor.PowerStatisticsProcessor;
 import com.smarthome.smart_home_iot.batch.step.reader.PowerAggReader;
 import com.smarthome.smart_home_iot.batch.step.writer.PowerStatisticsWriter;
@@ -20,6 +21,7 @@ public class PowerStepConfig {
     private final PowerAggReader powerReader;
     private final PowerStatisticsProcessor powerProcessor;
     private final PowerStatisticsWriter powerWriter;
+    private final PowerStepListener powerStepListener;
 
     @Bean
     public Step powerStep(JobRepository jobRepository,
@@ -36,6 +38,7 @@ public class PowerStepConfig {
                 .reader(powerReader)
                 .processor(powerProcessor)
                 .writer(powerWriter)
+                .listener(powerStepListener)
                 .build();
     }
 }
