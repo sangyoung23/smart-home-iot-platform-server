@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 
 @Document(collection = "sensor-air-quality")
-@Getter @Builder
+@Getter @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AirQualityDocument {
@@ -24,4 +24,7 @@ public class AirQualityDocument {
     private boolean gasLeak;
     private int smokeLevel;
     private LocalDateTime timestamp;
+
+    @Builder.Default
+    private boolean isProcessed = false;
 }

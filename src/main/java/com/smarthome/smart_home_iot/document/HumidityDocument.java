@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 
 @Document(collection = "sensor-humidity")
-@Getter @Builder
+@Getter @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HumidityDocument {
@@ -18,4 +18,7 @@ public class HumidityDocument {
     private String deviceId;
     private Double humidity;
     private LocalDateTime timestamp;
+
+    @Builder.Default
+    private boolean isProcessed = false;
 }

@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 
 @Document(collection = "sensor-battery")
-@Getter @Builder
+@Getter @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BatteryDocument {
@@ -18,4 +18,7 @@ public class BatteryDocument {
     private String deviceId;
     private int battery;
     private LocalDateTime timestamp;
+
+    @Builder.Default
+    private boolean isProcessed = false;
 }
