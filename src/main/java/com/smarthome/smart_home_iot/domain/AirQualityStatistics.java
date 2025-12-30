@@ -61,4 +61,42 @@ public class AirQualityStatistics {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt; // 레코드 생성 시각
+
+    public void merge(AirQualityStatistics other) {
+        int totalCount = this.sampleCount + other.sampleCount;
+
+        this.avgPm10 =
+                ((this.avgPm10 * this.sampleCount)
+                        + (other.avgPm10 * other.sampleCount))
+                        / totalCount;
+
+        this.avgPm25 =
+                ((this.avgPm25 * this.sampleCount)
+                        + (other.avgPm25 * other.sampleCount))
+                        / totalCount;
+
+        this.avgCo2 =
+                ((this.avgCo2 * this.sampleCount)
+                        + (other.avgCo2 * other.sampleCount))
+                        / totalCount;
+
+        this.avgVoc =
+                ((this.avgVoc * this.sampleCount)
+                        + (other.avgVoc * other.sampleCount))
+                        / totalCount;
+
+        this.avgLight =
+                ((this.avgLight * this.sampleCount)
+                        + (other.avgLight * other.sampleCount))
+                        / totalCount;
+
+        this.avgSmokeLevel =
+                ((this.avgSmokeLevel * this.sampleCount)
+                        + (other.avgSmokeLevel * other.sampleCount))
+                        / totalCount;
+
+        this.gasLeakCount += other.gasLeakCount;
+        this.sampleCount = totalCount;
+    }
+
 }

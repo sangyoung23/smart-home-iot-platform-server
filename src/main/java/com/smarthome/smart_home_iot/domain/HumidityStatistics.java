@@ -49,4 +49,22 @@ public class HumidityStatistics {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt; // 레코드 생성 시각
+
+    public void merge(HumidityStatistics incoming) {
+        int totalCount = this.sampleCount + incoming.sampleCount;
+
+        this.avgHumidity =
+                (this.avgHumidity * this.sampleCount
+                        + incoming.avgHumidity * incoming.sampleCount)
+                        / totalCount;
+
+        this.minHumidity =
+                Math.min(this.minHumidity, incoming.minHumidity);
+
+        this.maxHumidity =
+                Math.max(this.maxHumidity, incoming.maxHumidity);
+
+        this.sampleCount = totalCount;
+    }
+
 }
