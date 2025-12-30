@@ -1,6 +1,5 @@
 package com.smarthome.smart_home_iot.batch.step;
 
-import com.smarthome.smart_home_iot.batch.step.listener.BatteryStepListener;
 import com.smarthome.smart_home_iot.batch.step.processor.BatteryStatisticsProcessor;
 import com.smarthome.smart_home_iot.batch.step.reader.BatteryAggReader;
 import com.smarthome.smart_home_iot.batch.step.writer.BatteryStatisticsWriter;
@@ -21,7 +20,6 @@ public class BatteryStepConfig {
     private final BatteryAggReader batteryReader;
     private final BatteryStatisticsProcessor batteryProcessor;
     private final BatteryStatisticsWriter batteryWriter;
-    private final BatteryStepListener batteryStepListener;
 
     @Bean
     public Step batteryStep(JobRepository jobRepository,
@@ -38,7 +36,6 @@ public class BatteryStepConfig {
                 .reader(batteryReader)
                 .processor(batteryProcessor)
                 .writer(batteryWriter)
-                .listener(batteryStepListener)
                 .build();
     }
 }
