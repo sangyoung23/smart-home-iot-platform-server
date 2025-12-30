@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ public class SensorJobScheduler {
     private final BatteryDocumentRepository batteryRepo;
     private final AirQualityDocumentRepository airQualityRepo;
 
-    @Scheduled(cron = "0 30 * * * *")  // 매시 30분마다
+    @Scheduled(cron = "0 * * * * *")  // 매분마다 (테스트용)
     public void runSensorJob() {
 
         // 1️⃣ 처리할 데이터 없으면 스킵
@@ -38,17 +39,13 @@ public class SensorJobScheduler {
         try {
             log.info("센서 데이터 Job 실행");
 
-            // 배치 시작 시간 기록
-            LocalDateTime batchStartTime = LocalDateTime.now();
-
             JobParameters params = new JobParametersBuilder()
-                    .addLocalDateTime("batchStartTime", batchStartTime)
-                    .addLong("requestTime", System.currentTimeMillis())
+                    .addLong("run.id", System.currentTimeMillis()) // JobInstance 구분용
                     .toJobParameters();
 
             jobLauncher.run(sensorJob, params);
 
-            log.info("센서 데이터 Job 시작 요청 완료");
+            log.info("센서 데이터 Job 종료");
 
         } catch (Exception e) {
             log.error("센서 데이터 Job 실패", e);
