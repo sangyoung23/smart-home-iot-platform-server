@@ -49,4 +49,21 @@ public class TemperatureStatistics {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt; // 레코드 생성 시각
+
+    public void merge(TemperatureStatistics incoming) {
+        int totalCount = this.getSampleCount() + incoming.getSampleCount();
+
+        this.avgTemperature =
+                (this.avgTemperature * this.sampleCount
+                        + incoming.getAvgTemperature() * incoming.getSampleCount())
+                        / totalCount;
+
+        this.minTemperature =
+                Math.min(this.minTemperature, incoming.getMinTemperature());
+
+        this.maxTemperature =
+                Math.max(this.maxTemperature, incoming.getMaxTemperature());
+
+        this.sampleCount = totalCount;
+    }
 }

@@ -2,29 +2,45 @@ package com.smarthome.smart_home_iot.batch.step.reader;
 
 import com.smarthome.smart_home_iot.dto.batch.PowerAggResult;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
+import org.springframework.batch.core.annotation.BeforeStep;
+import org.springframework.batch.core.step.StepExecution;
 import org.springframework.batch.infrastructure.item.ItemReader;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.DateOperators;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class PowerAggReader implements ItemReader<PowerAggResult> {
 
     private final MongoTemplate mongoTemplate;
     private Iterator<PowerAggResult> iterator;
 
+    // 🔥 처리 대상 원본 ID 저장용
+    private final List<ObjectId> processedIds = new ArrayList<>();
+
+    @BeforeStep
+    public void beforeStep(StepExecution stepExecution) {
+        stepExecution
+                .getExecutionContext()
+                .put("processedPowerIds", processedIds);
+    }
+
     @Override
     public PowerAggResult read() {
         if (iterator == null) {
-            iterator = aggregate().iterator();
+            List<PowerAggResult> results = aggregate();
+            iterator = results.iterator();
         }
         return iterator.hasNext() ? iterator.next() : null;
     }
@@ -35,62 +51,64 @@ public class PowerAggReader implements ItemReader<PowerAggResult> {
 
                 match(Criteria.where("isProcessed").is(false)),
 
+                // 🔥 timestamp에서 날짜 정보 + hour + _id 유지
                 project("deviceId", "powerUsage", "voltage", "current", "energy", "timestamp")
-                        .and(
-                                DateOperators.Year
-                                        .yearOf("timestamp")
-                                        .withTimezone(DateOperators.Timezone.valueOf("Asia/Seoul"))
-                        ).as("year")
-                        .and(
-                                DateOperators.Month
-                                        .monthOf("timestamp")
-                                        .withTimezone(DateOperators.Timezone.valueOf("Asia/Seoul"))
-                        ).as("month")
-                        .and(
-                                DateOperators.DayOfMonth
-                                        .dayOfMonth("timestamp")
-                                        .withTimezone(DateOperators.Timezone.valueOf("Asia/Seoul"))
-                        ).as("day")
-                        .and(
-                                DateOperators.Hour
-                                        .hourOf("timestamp")
-                                        .withTimezone(DateOperators.Timezone.valueOf("Asia/Seoul"))
-                        ).as("hour"),
+                        .and("_id").as("docId")
+                        .and(DateOperators.Year.yearOf("timestamp")
+                                .withTimezone(DateOperators.Timezone.valueOf("Asia/Seoul")))
+                        .as("year")
+                        .and(DateOperators.Month.monthOf("timestamp")
+                                .withTimezone(DateOperators.Timezone.valueOf("Asia/Seoul")))
+                        .as("month")
+                        .and(DateOperators.DayOfMonth.dayOfMonth("timestamp")
+                                .withTimezone(DateOperators.Timezone.valueOf("Asia/Seoul")))
+                        .as("day")
+                        .and(DateOperators.Hour.hourOf("timestamp")
+                                .withTimezone(DateOperators.Timezone.valueOf("Asia/Seoul")))
+                        .as("hour"),
 
-        group("deviceId", "year", "month", "day", "hour")
+                // 🔥 device + hour 기준 집계
+                group("deviceId", "year", "month", "day", "hour")
                         .avg("powerUsage").as("avgPowerUsage")
                         .min("powerUsage").as("minPowerUsage")
                         .max("powerUsage").as("maxPowerUsage")
                         .avg("voltage").as("avgVoltage")
                         .avg("current").as("avgCurrent")
                         .sum("energy").as("totalEnergy")
-                        .count().as("sampleCount"),
+                        .count().as("sampleCount")
+                        .addToSet("docId").as("docIds"),
 
+                // 🔥 statDate 반드시 생성
                 project(
-                        "avgPowerUsage",
-                        "minPowerUsage",
-                        "maxPowerUsage",
-                        "avgVoltage",
-                        "avgCurrent",
-                        "totalEnergy",
-                        "sampleCount"
+                        "avgPowerUsage", "minPowerUsage", "maxPowerUsage",
+                        "avgVoltage", "avgCurrent", "totalEnergy", "sampleCount"
                 )
                         .and("_id.deviceId").as("deviceId")
+                        .and("_id.hour").as("statHour")
                         .and(
-                                DateOperators.DateFromParts
-                                        .dateFromParts()
+                                DateOperators.DateFromParts.dateFromParts()
                                         .year("$_id.year")
                                         .month("$_id.month")
                                         .day("$_id.day")
                         ).as("statDate")
-                        .and("_id.hour").as("statHour")
+                        .and("docIds").as("docIds")
                         .andExclude("_id")
         );
 
-        return mongoTemplate.aggregate(
-                aggregation,
-                "sensor-power",
-                PowerAggResult.class
-        ).getMappedResults();
+        List<PowerAggResult> results =
+                mongoTemplate.aggregate(
+                        aggregation,
+                        "sensor-power",
+                        PowerAggResult.class
+                ).getMappedResults();
+
+        // 🔥 집계에 사용된 원본 ID 누적
+        results.forEach(r ->
+                r.getDocIds().forEach(id -> processedIds.add(id))
+        );
+
+        log.info("PowerAggReader - 집계 결과 개수: {}", results.size());
+
+        return results;
     }
 }

@@ -1,6 +1,5 @@
 package com.smarthome.smart_home_iot.batch.step;
 
-import com.smarthome.smart_home_iot.batch.step.listener.AirQualityStepListener;
 import com.smarthome.smart_home_iot.batch.step.processor.AirQualityStatisticsProcessor;
 import com.smarthome.smart_home_iot.batch.step.reader.AirQualityAggReader;
 import com.smarthome.smart_home_iot.batch.step.writer.AirQualityStatisticsWriter;
@@ -21,7 +20,6 @@ public class AirQualityStepConfig {
     private final AirQualityAggReader airQualityReader;
     private final AirQualityStatisticsProcessor airQualityProcessor;
     private final AirQualityStatisticsWriter airQualityWriter;
-    private final AirQualityStepListener airQualityStepListener;
 
     @Bean
     public Step airQualityStep(
@@ -35,7 +33,6 @@ public class AirQualityStepConfig {
                 .reader(airQualityReader)
                 .processor(airQualityProcessor)
                 .writer(airQualityWriter)
-                .listener(airQualityStepListener)
                 .build();
     }
 }

@@ -49,4 +49,20 @@ public class BatteryStatistics {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt; // 레코드 생성 시각
+
+    public void merge(BatteryStatistics incoming) {
+        int totalCount = this.sampleCount + incoming.sampleCount;
+
+        this.avgBattery =
+                ((this.avgBattery * this.sampleCount)
+                        + (incoming.avgBattery * incoming.sampleCount))
+                        / totalCount;
+
+        this.minBattery = Math.min(this.minBattery, incoming.minBattery);
+
+        this.maxBattery = Math.max(this.maxBattery, incoming.maxBattery);
+
+        this.sampleCount = totalCount;
+    }
+
 }

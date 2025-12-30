@@ -58,4 +58,34 @@ public class PowerStatistics {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt; // 레코드 생성 시각
+
+    public void merge(PowerStatistics incoming) {
+        int totalCount = this.sampleCount + incoming.sampleCount;
+
+        this.avgPowerUsage =
+                (this.avgPowerUsage * this.sampleCount
+                        + incoming.avgPowerUsage * incoming.sampleCount)
+                        / totalCount;
+
+        this.minPowerUsage =
+                Math.min(this.minPowerUsage, incoming.minPowerUsage);
+
+        this.maxPowerUsage =
+                Math.max(this.maxPowerUsage, incoming.maxPowerUsage);
+
+        this.avgVoltage =
+                (this.avgVoltage * this.sampleCount
+                        + incoming.avgVoltage * incoming.sampleCount)
+                        / totalCount;
+
+        this.avgCurrent =
+                (this.avgCurrent * this.sampleCount
+                        + incoming.avgCurrent * incoming.sampleCount)
+                        / totalCount;
+
+        this.totalEnergy += incoming.totalEnergy;
+
+        this.sampleCount = totalCount;
+    }
+
 }
