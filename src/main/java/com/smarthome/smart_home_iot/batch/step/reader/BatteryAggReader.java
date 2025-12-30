@@ -2,24 +2,40 @@ package com.smarthome.smart_home_iot.batch.step.reader;
 
 import com.smarthome.smart_home_iot.dto.batch.BatteryAggResult;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
+import org.springframework.batch.core.annotation.BeforeStep;
+import org.springframework.batch.core.step.StepExecution;
 import org.springframework.batch.infrastructure.item.ItemReader;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.DateOperators;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class BatteryAggReader implements ItemReader<BatteryAggResult> {
 
     private final MongoTemplate mongoTemplate;
     private Iterator<BatteryAggResult> iterator;
+
+    // 🔥 처리 대상 원본 ID 저장용
+    private final List<ObjectId> processedIds = new ArrayList<>();
+
+    @BeforeStep
+    public void beforeStep(StepExecution stepExecution) {
+        stepExecution
+                .getExecutionContext()
+                .put("processedBatteryIds", processedIds);
+    }
 
     @Override
     public BatteryAggResult read() {
@@ -35,47 +51,59 @@ public class BatteryAggReader implements ItemReader<BatteryAggResult> {
 
                 match(Criteria.where("isProcessed").is(false)),
 
+                // 🔥 timestamp → year/month/day/hour + _id 유지
                 project("deviceId", "battery", "timestamp")
-                        .and(DateOperators.Year
-                                .yearOf("timestamp")
+                        .and("_id").as("docId")
+                        .and(DateOperators.Year.yearOf("timestamp")
                                 .withTimezone(DateOperators.Timezone.valueOf("Asia/Seoul")))
                         .as("year")
-                        .and(DateOperators.Month
-                                .monthOf("timestamp")
+                        .and(DateOperators.Month.monthOf("timestamp")
                                 .withTimezone(DateOperators.Timezone.valueOf("Asia/Seoul")))
                         .as("month")
-                        .and(DateOperators.DayOfMonth
-                                .dayOfMonth("timestamp")
+                        .and(DateOperators.DayOfMonth.dayOfMonth("timestamp")
                                 .withTimezone(DateOperators.Timezone.valueOf("Asia/Seoul")))
                         .as("day")
-                        .and(DateOperators.Hour
-                                .hourOf("timestamp")
+                        .and(DateOperators.Hour.hourOf("timestamp")
                                 .withTimezone(DateOperators.Timezone.valueOf("Asia/Seoul")))
                         .as("hour"),
 
+                // 🔥 device + 날짜 + hour 기준 집계
                 group("deviceId", "year", "month", "day", "hour")
                         .avg("battery").as("avgBattery")
                         .min("battery").as("minBattery")
                         .max("battery").as("maxBattery")
-                        .count().as("sampleCount"),
+                        .count().as("sampleCount")
+                        .addToSet("docId").as("docIds"),
 
+                // 🔥 statDate 반드시 생성
                 project("avgBattery", "minBattery", "maxBattery", "sampleCount")
                         .and("_id.deviceId").as("deviceId")
+                        .and("_id.hour").as("statHour")
                         .and(
-                                DateOperators.DateFromParts
-                                        .dateFromParts()
+                                DateOperators.DateFromParts.dateFromParts()
                                         .year("$_id.year")
                                         .month("$_id.month")
                                         .day("$_id.day")
                         ).as("statDate")
-                        .and("_id.hour").as("statHour")
+                        .and("docIds").as("docIds")
                         .andExclude("_id")
         );
 
-        return mongoTemplate.aggregate(
-                aggregation,
-                "sensor-battery",
-                BatteryAggResult.class
-        ).getMappedResults();
+        List<BatteryAggResult> results =
+                mongoTemplate.aggregate(
+                        aggregation,
+                        "sensor-battery",
+                        BatteryAggResult.class
+                ).getMappedResults();
+
+        // 🔥 집계에 사용된 원본 ID 누적
+        results.forEach(r ->
+                r.getDocIds().forEach(id -> processedIds.add(id))
+        );
+
+        log.info("BatteryAggReader - 집계 결과 개수: {}", results.size());
+
+        return results;
     }
 }
+
