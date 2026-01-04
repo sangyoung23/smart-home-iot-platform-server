@@ -30,6 +30,9 @@ public class HumidityAggReader implements ItemReader<HumidityAggResult> {
 
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
+        iterator = null;
+        processedIds.clear();
+
         stepExecution.getExecutionContext()
                 .put("processedHumidityIds", processedIds);
     }

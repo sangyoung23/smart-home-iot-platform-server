@@ -32,6 +32,9 @@ public class BatteryAggReader implements ItemReader<BatteryAggResult> {
 
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
+        iterator = null;
+        processedIds.clear();
+
         stepExecution
                 .getExecutionContext()
                 .put("processedBatteryIds", processedIds);
