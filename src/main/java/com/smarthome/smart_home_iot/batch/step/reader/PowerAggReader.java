@@ -31,6 +31,9 @@ public class PowerAggReader implements ItemReader<PowerAggResult> {
 
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
+        iterator = null;
+        processedIds.clear();
+
         stepExecution
                 .getExecutionContext()
                 .put("processedPowerIds", processedIds);

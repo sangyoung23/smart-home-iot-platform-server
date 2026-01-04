@@ -32,6 +32,9 @@ public class AirQualityAggReader implements ItemReader<AirQualityAggResult> {
 
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
+        iterator = null;
+        processedIds.clear();
+
         stepExecution
                 .getExecutionContext()
                 .put("processedAirQualityIds", processedIds);

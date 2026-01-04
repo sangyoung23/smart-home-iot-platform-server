@@ -31,6 +31,9 @@ public class TemperatureAggReader implements ItemReader<TemperatureAggResult> {
 
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
+        iterator = null;
+        processedIds.clear();
+
         stepExecution
                 .getExecutionContext()
                 .put("processedTemperatureIds", processedIds);
