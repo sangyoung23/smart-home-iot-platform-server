@@ -8,12 +8,19 @@ spring:
   logging:
     level:
       org.springframework.boot.context.config: DEBUG
+      org.springframework.batch: DEBUG
+      org.springframework.jdbc: DEBUG
 
   batch:
+    jdbc:
+      initialize-schema: never
+      table-prefix: BATCH_
+      platform: mysql
     job:
       enabled: false
 
   jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
     show-sql: true
