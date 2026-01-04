@@ -5,20 +5,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.parameters.JobParameters;
-import org.springframework.batch.core.job.parameters.JobParametersBuilder;
-import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.JobOperator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class SensorJobScheduler {
 
-    private final JobLauncher jobLauncher;
+    @Autowired
+    JobOperator jobOperator;
+
     private final Job sensorJob;
 
     private final TemperatureDocumentRepository temperatureRepo;
@@ -39,11 +38,7 @@ public class SensorJobScheduler {
         try {
             log.info("센서 데이터 Job 실행");
 
-            JobParameters params = new JobParametersBuilder()
-                    .addLong("run.id", System.currentTimeMillis()) // JobInstance 구분용
-                    .toJobParameters();
-
-            jobLauncher.run(sensorJob, params);
+            jobOperator.start(sensorJob, new JobParameters());
 
             log.info("센서 데이터 Job 종료");
 
