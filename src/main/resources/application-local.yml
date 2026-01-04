@@ -1,9 +1,6 @@
 spring:
   datasource:
-    hikari:
-      initialization-fail-timeout: 60000
-      connection-timeout: 30000
-      validation-timeout: 5000
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
