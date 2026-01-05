@@ -1,12 +1,8 @@
 package com.smarthome.smart_home_iot.batch.step.writer;
 
-import com.smarthome.smart_home_iot.domain.HumidityStatistics;
-import com.smarthome.smart_home_iot.domain.PowerStatistics;
-import com.smarthome.smart_home_iot.domain.TemperatureStatistics;
+import com.smarthome.smart_home_iot.domain.sensor.HumidityStatistics;
 import com.smarthome.smart_home_iot.repository.jpa.HumidityStatisticsRepository;
-import com.smarthome.smart_home_iot.repository.jpa.PowerStatisticsRepository;
 import com.smarthome.smart_home_iot.service.batch.HumidityBulkUpdateService;
-import com.smarthome.smart_home_iot.service.batch.PowerBulkUpdateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;

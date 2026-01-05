@@ -1,12 +1,8 @@
 package com.smarthome.smart_home_iot.batch.step.writer;
 
-import com.smarthome.smart_home_iot.domain.AirQualityStatistics;
-import com.smarthome.smart_home_iot.domain.BatteryStatistics;
-import com.smarthome.smart_home_iot.domain.TemperatureStatistics;
+import com.smarthome.smart_home_iot.domain.sensor.AirQualityStatistics;
 import com.smarthome.smart_home_iot.repository.jpa.AirQualityStatisticsRepository;
-import com.smarthome.smart_home_iot.repository.jpa.BatteryStatisticsRepository;
 import com.smarthome.smart_home_iot.service.batch.AirQualityBulkUpdateService;
-import com.smarthome.smart_home_iot.service.batch.BatteryBulkUpdateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
