@@ -12,7 +12,10 @@ import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,12 +30,13 @@ public class PowerAggReader implements ItemReader<PowerAggResult> {
     private Iterator<PowerAggResult> iterator;
 
     // 🔥 처리 대상 원본 ID 저장용
-    private final List<ObjectId> processedIds = new ArrayList<>();
+    private List<ObjectId> processedIds = new ArrayList<>();
 
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
         iterator = null;
-        processedIds.clear();
+
+        processedIds = new ArrayList<>();
 
         stepExecution
                 .getExecutionContext()
@@ -50,9 +54,18 @@ public class PowerAggReader implements ItemReader<PowerAggResult> {
 
     private List<PowerAggResult> aggregate() {
 
-        Aggregation aggregation = newAggregation(
+        ZoneId zone = ZoneId.of("Asia/Seoul");
 
-                match(Criteria.where("isProcessed").is(false)),
+        LocalDateTime todayStart =
+                LocalDateTime.now(zone)
+                        .toLocalDate()
+                        .atStartOfDay();
+
+        Aggregation aggregation = newAggregation(
+                match(Criteria
+                        .where("timestamp").lt(todayStart)
+                        .and("isProcessed").is(false)
+                ),
 
                 // 🔥 timestamp에서 날짜 정보 + hour + _id 유지
                 project("deviceId", "powerUsage", "voltage", "current", "energy", "timestamp")
