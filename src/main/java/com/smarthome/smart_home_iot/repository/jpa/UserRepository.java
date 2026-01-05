@@ -1,6 +1,6 @@
 package com.smarthome.smart_home_iot.repository.jpa;
 
-import com.smarthome.smart_home_iot.domain.User;
+import com.smarthome.smart_home_iot.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
