@@ -3,7 +3,7 @@ package com.smarthome.smart_home_iot.batch.step;
 import com.smarthome.smart_home_iot.batch.step.processor.AirQualityStatisticsProcessor;
 import com.smarthome.smart_home_iot.batch.step.reader.AirQualityAggReader;
 import com.smarthome.smart_home_iot.batch.step.writer.AirQualityStatisticsWriter;
-import com.smarthome.smart_home_iot.domain.AirQualityStatistics;
+import com.smarthome.smart_home_iot.domain.sensor.AirQualityStatistics;
 import com.smarthome.smart_home_iot.dto.batch.AirQualityAggResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.repository.JobRepository;

@@ -1,6 +1,6 @@
 package com.smarthome.smart_home_iot.batch.step.processor;
 
-import com.smarthome.smart_home_iot.domain.AirQualityStatistics;
+import com.smarthome.smart_home_iot.domain.sensor.AirQualityStatistics;
 import com.smarthome.smart_home_iot.dto.batch.AirQualityAggResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.infrastructure.item.ItemProcessor;

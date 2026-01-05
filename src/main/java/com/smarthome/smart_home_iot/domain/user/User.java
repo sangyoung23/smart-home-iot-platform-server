@@ -1,4 +1,4 @@
-package com.smarthome.smart_home_iot.domain;
+package com.smarthome.smart_home_iot.domain.user;
 
 import jakarta.persistence.*;
 import lombok.*;

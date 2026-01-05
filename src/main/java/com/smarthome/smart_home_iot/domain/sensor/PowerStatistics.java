@@ -1,4 +1,4 @@
-package com.smarthome.smart_home_iot.domain;
+package com.smarthome.smart_home_iot.domain.sensor;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Getter @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PowerStatistics {
+public class PowerStatistics implements StatisticsEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,6 +58,16 @@ public class PowerStatistics {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt; // 레코드 생성 시각
+
+    @Override
+    public LocalDateTime getCreatedAt() {
+        return this.createdAt;
+    }
+
+    @Override
+    public Double getRepresentativeValue() {
+        return this.avgPowerUsage;
+    }
 
     public void merge(PowerStatistics incoming) {
         int totalCount = this.sampleCount + incoming.sampleCount;

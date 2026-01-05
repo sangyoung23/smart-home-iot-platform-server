@@ -1,6 +1,6 @@
 package com.smarthome.smart_home_iot.batch.step.processor;
 
-import com.smarthome.smart_home_iot.domain.PowerStatistics;
+import com.smarthome.smart_home_iot.domain.sensor.PowerStatistics;
 import com.smarthome.smart_home_iot.dto.batch.PowerAggResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.infrastructure.item.ItemProcessor;

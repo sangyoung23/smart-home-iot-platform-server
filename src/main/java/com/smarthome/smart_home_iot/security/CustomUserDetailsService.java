@@ -1,6 +1,6 @@
 package com.smarthome.smart_home_iot.security;
 
-import com.smarthome.smart_home_iot.domain.User;
+import com.smarthome.smart_home_iot.domain.user.User;
 import com.smarthome.smart_home_iot.repository.jpa.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

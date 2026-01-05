@@ -14,6 +14,11 @@ java {
 	}
 }
 
+tasks.withType(Test).configureEach {
+	failOnNoDiscoveredTests = false
+}
+
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor

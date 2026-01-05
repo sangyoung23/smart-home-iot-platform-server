@@ -1,6 +1,6 @@
 package com.smarthome.smart_home_iot.batch.step.writer;
 
-import com.smarthome.smart_home_iot.domain.TemperatureStatistics;
+import com.smarthome.smart_home_iot.domain.sensor.TemperatureStatistics;
 import com.smarthome.smart_home_iot.repository.jpa.TemperatureStatisticsRepository;
 import com.smarthome.smart_home_iot.service.batch.TemperatureBulkUpdateService;
 import lombok.RequiredArgsConstructor;

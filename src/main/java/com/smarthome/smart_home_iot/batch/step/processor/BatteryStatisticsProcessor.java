@@ -1,6 +1,6 @@
 package com.smarthome.smart_home_iot.batch.step.processor;
 
-import com.smarthome.smart_home_iot.domain.BatteryStatistics;
+import com.smarthome.smart_home_iot.domain.sensor.BatteryStatistics;
 import com.smarthome.smart_home_iot.dto.batch.BatteryAggResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.infrastructure.item.ItemProcessor;

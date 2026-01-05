@@ -1,9 +1,10 @@
 package com.smarthome.smart_home_iot.repository.jpa;
 
-import com.smarthome.smart_home_iot.domain.TemperatureStatistics;
+import com.smarthome.smart_home_iot.domain.sensor.TemperatureStatistics;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface TemperatureStatisticsRepository extends JpaRepository<TemperatureStatistics, Long> {
@@ -12,4 +13,8 @@ public interface TemperatureStatisticsRepository extends JpaRepository<Temperatu
             LocalDate statDate,
             int statHour
     );
+
+    Optional<TemperatureStatistics> findTopByOrderByCreatedAtDesc();
+
+    long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 }

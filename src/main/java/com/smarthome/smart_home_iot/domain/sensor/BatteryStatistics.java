@@ -1,4 +1,4 @@
-package com.smarthome.smart_home_iot.domain;
+package com.smarthome.smart_home_iot.domain.sensor;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(
-        name = "tb_humidity_statistics",
+        name = "tb_battery_statistics",
         uniqueConstraints = {
                 // device_id + stat_date + stat_hour 가 유일하도록 설정
                 @UniqueConstraint(columnNames = {"device_id", "stat_date", "stat_hour"})
@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Getter @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class HumidityStatistics {
+public class BatteryStatistics implements StatisticsEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,34 +35,42 @@ public class HumidityStatistics {
     @Column(name = "stat_hour", nullable = false)
     private int statHour; // 통계 기준 시간 (0~23)
 
-    @Column(name = "avg_humidity", nullable = false)
-    private double avgHumidity; // 해당 시간대 평균 습도
+    @Column(name = "avg_battery", nullable = false)
+    private double avgBattery; // 평균 배터리 잔량
 
-    @Column(name = "min_humidity", nullable = false)
-    private double minHumidity; // 해당 시간대 최소 습도
+    @Column(name = "min_battery", nullable = false)
+    private int minBattery; // 최소 배터리 잔량
 
-    @Column(name = "max_humidity", nullable = false)
-    private double maxHumidity; // 해당 시간대 최대 습도
+    @Column(name = "max_battery", nullable = false)
+    private int maxBattery; // 최대 배터리 잔량
 
     @Column(name = "sample_count", nullable = false)
-    private int sampleCount; // 해당 시간대 측정된 데이터 개수
+    private int sampleCount; // 통계 계산에 사용된 데이터 개수
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt; // 레코드 생성 시각
 
-    public void merge(HumidityStatistics incoming) {
+    @Override
+    public LocalDateTime getCreatedAt() {
+        return this.createdAt;
+    }
+
+    @Override
+    public Double getRepresentativeValue() {
+        return this.avgBattery;
+    }
+
+    public void merge(BatteryStatistics incoming) {
         int totalCount = this.sampleCount + incoming.sampleCount;
 
-        this.avgHumidity =
-                (this.avgHumidity * this.sampleCount
-                        + incoming.avgHumidity * incoming.sampleCount)
+        this.avgBattery =
+                ((this.avgBattery * this.sampleCount)
+                        + (incoming.avgBattery * incoming.sampleCount))
                         / totalCount;
 
-        this.minHumidity =
-                Math.min(this.minHumidity, incoming.minHumidity);
+        this.minBattery = Math.min(this.minBattery, incoming.minBattery);
 
-        this.maxHumidity =
-                Math.max(this.maxHumidity, incoming.maxHumidity);
+        this.maxBattery = Math.max(this.maxBattery, incoming.maxBattery);
 
         this.sampleCount = totalCount;
     }

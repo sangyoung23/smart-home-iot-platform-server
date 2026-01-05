@@ -1,9 +1,10 @@
 package com.smarthome.smart_home_iot.repository.jpa;
 
-import com.smarthome.smart_home_iot.domain.PowerStatistics;
+import com.smarthome.smart_home_iot.domain.sensor.PowerStatistics;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface PowerStatisticsRepository extends JpaRepository<PowerStatistics, Long> {
@@ -12,4 +13,8 @@ public interface PowerStatisticsRepository extends JpaRepository<PowerStatistics
             LocalDate statDate,
             int statHour
     );
+
+    Optional<PowerStatistics> findTopByOrderByCreatedAtDesc();
+
+    long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 }
