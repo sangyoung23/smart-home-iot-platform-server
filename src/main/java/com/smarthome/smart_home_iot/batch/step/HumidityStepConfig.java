@@ -3,7 +3,7 @@ package com.smarthome.smart_home_iot.batch.step;
 import com.smarthome.smart_home_iot.batch.step.processor.HumidityStatisticsProcessor;
 import com.smarthome.smart_home_iot.batch.step.reader.HumidityAggReader;
 import com.smarthome.smart_home_iot.batch.step.writer.HumidityStatisticsWriter;
-import com.smarthome.smart_home_iot.domain.HumidityStatistics;
+import com.smarthome.smart_home_iot.domain.sensor.HumidityStatistics;
 import com.smarthome.smart_home_iot.dto.batch.HumidityAggResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.repository.JobRepository;

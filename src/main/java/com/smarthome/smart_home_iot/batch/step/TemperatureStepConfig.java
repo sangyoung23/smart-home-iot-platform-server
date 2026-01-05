@@ -3,7 +3,7 @@ package com.smarthome.smart_home_iot.batch.step;
 import com.smarthome.smart_home_iot.batch.step.processor.TemperatureStatisticsProcessor;
 import com.smarthome.smart_home_iot.batch.step.reader.TemperatureAggReader;
 import com.smarthome.smart_home_iot.batch.step.writer.TemperatureStatisticsWriter;
-import com.smarthome.smart_home_iot.domain.TemperatureStatistics;
+import com.smarthome.smart_home_iot.domain.sensor.TemperatureStatistics;
 import com.smarthome.smart_home_iot.dto.batch.TemperatureAggResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.repository.JobRepository;

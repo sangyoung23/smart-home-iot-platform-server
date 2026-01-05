@@ -3,7 +3,7 @@ package com.smarthome.smart_home_iot.batch.step;
 import com.smarthome.smart_home_iot.batch.step.processor.BatteryStatisticsProcessor;
 import com.smarthome.smart_home_iot.batch.step.reader.BatteryAggReader;
 import com.smarthome.smart_home_iot.batch.step.writer.BatteryStatisticsWriter;
-import com.smarthome.smart_home_iot.domain.BatteryStatistics;
+import com.smarthome.smart_home_iot.domain.sensor.BatteryStatistics;
 import com.smarthome.smart_home_iot.dto.batch.BatteryAggResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.repository.JobRepository;

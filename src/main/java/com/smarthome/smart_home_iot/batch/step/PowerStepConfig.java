@@ -3,7 +3,7 @@ package com.smarthome.smart_home_iot.batch.step;
 import com.smarthome.smart_home_iot.batch.step.processor.PowerStatisticsProcessor;
 import com.smarthome.smart_home_iot.batch.step.reader.PowerAggReader;
 import com.smarthome.smart_home_iot.batch.step.writer.PowerStatisticsWriter;
-import com.smarthome.smart_home_iot.domain.PowerStatistics;
+import com.smarthome.smart_home_iot.domain.sensor.PowerStatistics;
 import com.smarthome.smart_home_iot.dto.batch.PowerAggResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.repository.JobRepository;
