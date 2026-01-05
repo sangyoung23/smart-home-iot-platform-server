@@ -1,4 +1,4 @@
-package com.smarthome.smart_home_iot.dto;
+package com.smarthome.smart_home_iot.dto.user;
 
 import lombok.*;
 
