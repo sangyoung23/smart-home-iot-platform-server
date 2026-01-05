@@ -1,6 +1,6 @@
 package com.smarthome.smart_home_iot.security;
 
-import com.smarthome.smart_home_iot.domain.User;
+import com.smarthome.smart_home_iot.domain.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

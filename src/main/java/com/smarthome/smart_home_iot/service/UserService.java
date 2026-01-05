@@ -1,8 +1,8 @@
 package com.smarthome.smart_home_iot.service;
 
-import com.smarthome.smart_home_iot.domain.User;
-import com.smarthome.smart_home_iot.dto.AuthRequest;
-import com.smarthome.smart_home_iot.dto.AuthResponse;
+import com.smarthome.smart_home_iot.domain.user.User;
+import com.smarthome.smart_home_iot.dto.user.AuthRequest;
+import com.smarthome.smart_home_iot.dto.user.AuthResponse;
 import com.smarthome.smart_home_iot.repository.jpa.UserRepository;
 import com.smarthome.smart_home_iot.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
