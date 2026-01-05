@@ -12,7 +12,10 @@ import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -26,12 +29,13 @@ public class HumidityAggReader implements ItemReader<HumidityAggResult> {
     private final MongoTemplate mongoTemplate;
     private Iterator<HumidityAggResult> iterator;
 
-    private final List<ObjectId> processedIds = new ArrayList<>();
+    private List<ObjectId> processedIds = new ArrayList<>();
 
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
         iterator = null;
-        processedIds.clear();
+
+        processedIds = new ArrayList<>();
 
         stepExecution.getExecutionContext()
                 .put("processedHumidityIds", processedIds);
@@ -47,9 +51,18 @@ public class HumidityAggReader implements ItemReader<HumidityAggResult> {
 
     private List<HumidityAggResult> aggregate() {
 
-        Aggregation aggregation = newAggregation(
+        ZoneId zone = ZoneId.of("Asia/Seoul");
 
-                match(Criteria.where("isProcessed").is(false)),
+        LocalDateTime todayStart =
+                LocalDateTime.now(zone)
+                        .toLocalDate()
+                        .atStartOfDay();
+
+        Aggregation aggregation = newAggregation(
+                match(Criteria
+                        .where("timestamp").lt(todayStart)
+                        .and("isProcessed").is(false)
+                ),
 
                 project("deviceId", "humidity", "timestamp")
                         .and("_id").as("docId")

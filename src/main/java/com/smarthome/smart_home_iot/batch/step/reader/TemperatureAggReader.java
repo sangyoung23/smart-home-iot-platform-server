@@ -12,7 +12,10 @@ import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -32,7 +35,8 @@ public class TemperatureAggReader implements ItemReader<TemperatureAggResult> {
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
         iterator = null;
-        processedIds.clear();
+
+        processedIds = new ArrayList<>();
 
         stepExecution
                 .getExecutionContext()
@@ -50,8 +54,18 @@ public class TemperatureAggReader implements ItemReader<TemperatureAggResult> {
 
     private List<TemperatureAggResult> aggregate() {
 
+        ZoneId zone = ZoneId.of("Asia/Seoul");
+
+        LocalDateTime todayStart =
+                LocalDateTime.now(zone)
+                        .toLocalDate()
+                        .atStartOfDay();
+
         Aggregation aggregation = newAggregation(
-                match(Criteria.where("isProcessed").is(false)),
+                match(Criteria
+                        .where("timestamp").lt(todayStart)
+                        .and("isProcessed").is(false)
+                ),
 
                 project("deviceId", "temperature", "timestamp")
                         .and("_id").as("docId")
