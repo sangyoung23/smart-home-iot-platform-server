@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -56,7 +57,6 @@ public class DashboardSummaryService {
         Optional<? extends StatisticsEntity> statsOpt =
                 repositoryHelper.findLatestBySensorType(type);
 
-        // 데이터 없음
         if (statsOpt.isEmpty()) {
             return SensorStatusDto.builder()
                     .sensorType(type)
@@ -67,19 +67,16 @@ public class DashboardSummaryService {
 
         StatisticsEntity stats = statsOpt.get();
         LocalDateTime lastCreatedAt = stats.getCreatedAt();
-        LocalDateTime now = LocalDateTime.now();
 
-        // 예상 집계 시간 (매시 정각)
-        LocalDateTime expectedAggregation = now
-                .withMinute(0).withSecond(0).withNano(0);
-        LocalDateTime allowedTime = expectedAggregation
-                .plusMinutes(AGGREGATION_DELAY_TOLERANCE_MINUTES);
+        ZoneId zone = ZoneId.of("Asia/Seoul");
+        LocalDateTime todayStart =
+                LocalDateTime.now(zone)
+                        .toLocalDate()
+                        .atStartOfDay();
 
-        // 정상 여부 판단: 예상 시간 이후 집계되었거나 아직 여유 시간 내
-        boolean isNormal = !lastCreatedAt.isBefore(expectedAggregation)
-                || now.isBefore(allowedTime);
+        boolean isNormal = !lastCreatedAt.isBefore(todayStart);
 
-        String message = isNormal ? "정상" : "집계 지연";
+        String message = isNormal ? "정상" : "금일 배치 미실행";
 
         return SensorStatusDto.builder()
                 .sensorType(type)
