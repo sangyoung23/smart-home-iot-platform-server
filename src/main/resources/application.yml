@@ -35,4 +35,4 @@ server:
 
 jwt:
   header: Authorization
-  expiration: 36000
+  expiration-ms: 36000000

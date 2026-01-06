@@ -14,7 +14,7 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    @Value("${jwt.expiration}")
+    @Value("${jwt.expiration-ms}")
     private long expirationMs; // 토큰 만료 시간
 
     // 토큰 생성
