@@ -41,7 +41,7 @@ public class AirQualityService {
             airQualityDocumentRepository.save(airQualityDoc);
 
             // 3. Redis 최신 상태 저장
-            String key = "sensor:airQuality:" + airDto.getDeviceId();
+            String key = "sensor:air_quality:" + airDto.getDeviceId();
             String value = objectMapper.writeValueAsString(airDto);
             stringRedisTemplate.opsForValue().set(key, value);
 
