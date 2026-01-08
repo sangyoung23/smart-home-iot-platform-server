@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Getter @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AirQualityStatistics implements StatisticsEntity {
+public class AirQualityStatistics implements FullStatisticsProjection {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,6 +61,11 @@ public class AirQualityStatistics implements StatisticsEntity {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt; // 레코드 생성 시각
+
+    @Override
+    public LocalDate getDate() {
+        return this.statDate;
+    }
 
     @Override
     public LocalDateTime getCreatedAt() {
