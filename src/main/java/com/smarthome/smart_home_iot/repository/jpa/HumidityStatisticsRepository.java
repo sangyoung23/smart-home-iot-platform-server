@@ -1,10 +1,14 @@
 package com.smarthome.smart_home_iot.repository.jpa;
 
+import com.smarthome.smart_home_iot.domain.sensor.DailyStatisticsProjection;
 import com.smarthome.smart_home_iot.domain.sensor.HumidityStatistics;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface HumidityStatisticsRepository extends JpaRepository<HumidityStatistics, Long> {
@@ -17,4 +21,11 @@ public interface HumidityStatisticsRepository extends JpaRepository<HumidityStat
     Optional<HumidityStatistics> findTopByOrderByCreatedAtDesc();
 
     long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+
+    List<DailyStatisticsProjection>
+    findByDeviceIdAndStatDateBetweenOrderByStatDate(
+            String deviceId,
+            LocalDate from,
+            LocalDate to
+    );
 }

@@ -1,10 +1,14 @@
 package com.smarthome.smart_home_iot.repository.jpa;
 
 import com.smarthome.smart_home_iot.domain.sensor.AirQualityStatistics;
+import com.smarthome.smart_home_iot.domain.sensor.DailyStatisticsProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface AirQualityStatisticsRepository extends JpaRepository<AirQualityStatistics, Long> {
@@ -17,4 +21,11 @@ public interface AirQualityStatisticsRepository extends JpaRepository<AirQuality
     Optional<AirQualityStatistics> findTopByOrderByCreatedAtDesc();
 
     long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+
+    List<DailyStatisticsProjection>
+    findByDeviceIdAndStatDateBetweenOrderByStatDate(
+            String deviceId,
+            LocalDate from,
+            LocalDate to
+    );
 }
