@@ -1,7 +1,8 @@
 package com.smarthome.smart_home_iot.service;
 
+import com.smarthome.smart_home_iot.domain.sensor.FullStatisticsProjection;
 import com.smarthome.smart_home_iot.domain.sensor.SensorType;
-import com.smarthome.smart_home_iot.domain.sensor.StatisticsEntity;
+import com.smarthome.smart_home_iot.domain.sensor.DailyStatisticsProjection;
 import com.smarthome.smart_home_iot.dto.dashboard.DashboardSummaryResponse;
 import com.smarthome.smart_home_iot.dto.dashboard.SensorStatusDto;
 import com.smarthome.smart_home_iot.helper.StatisticsRepositoryHelper;
@@ -54,7 +55,7 @@ public class DashboardSummaryService {
     }
 
     private SensorStatusDto checkSensorStatus(SensorType type) {
-        Optional<? extends StatisticsEntity> statsOpt =
+        Optional<? extends FullStatisticsProjection> statsOpt =
                 repositoryHelper.findLatestBySensorType(type);
 
         if (statsOpt.isEmpty()) {
@@ -65,7 +66,7 @@ public class DashboardSummaryService {
                     .build();
         }
 
-        StatisticsEntity stats = statsOpt.get();
+        FullStatisticsProjection stats = statsOpt.get();
         LocalDateTime lastCreatedAt = stats.getCreatedAt();
 
         ZoneId zone = ZoneId.of("Asia/Seoul");
