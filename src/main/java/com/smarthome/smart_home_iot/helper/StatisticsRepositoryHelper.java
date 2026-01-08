@@ -5,8 +5,10 @@ import com.smarthome.smart_home_iot.repository.jpa.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -20,10 +22,31 @@ public class StatisticsRepositoryHelper {
     private final HumidityStatisticsRepository humidityRepository;
     private final BatteryStatisticsRepository batteryRepository;
 
+    public List<? extends DailyStatisticsProjection> findDailyStats(
+            SensorType type,
+            String deviceId,
+            LocalDate from,
+            LocalDate to
+    ) {
+        return switch (type) {
+            case TEMPERATURE ->
+                    temperatureRepository.findByDeviceIdAndStatDateBetweenOrderByStatDate(deviceId, from, to);
+            case HUMIDITY ->
+                    humidityRepository.findByDeviceIdAndStatDateBetweenOrderByStatDate(deviceId, from, to);
+            case AIR_QUALITY ->
+                    airQualityRepository.findByDeviceIdAndStatDateBetweenOrderByStatDate(deviceId, from, to);
+            case POWER ->
+                    powerRepository.findByDeviceIdAndStatDateBetweenOrderByStatDate(deviceId, from, to);
+            case BATTERY ->
+                    batteryRepository.findByDeviceIdAndStatDateBetweenOrderByStatDate(deviceId, from, to);
+        };
+    }
+
+
     /**
      * 센서 타입에 따라 최근 통계 데이터 조회
      */
-    public Optional<? extends StatisticsEntity> findLatestBySensorType(SensorType type) {
+    public Optional<? extends FullStatisticsProjection> findLatestBySensorType(SensorType type) {
         return switch (type) {
             case POWER -> powerRepository.findTopByOrderByCreatedAtDesc();
             case AIR_QUALITY -> airQualityRepository.findTopByOrderByCreatedAtDesc();
@@ -41,7 +64,7 @@ public class StatisticsRepositoryHelper {
                 .map(this::findLatestBySensorType)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .map(StatisticsEntity::getCreatedAt)
+                .map(FullStatisticsProjection::getCreatedAt)
                 .max(LocalDateTime::compareTo)
                 .orElse(null);
     }
