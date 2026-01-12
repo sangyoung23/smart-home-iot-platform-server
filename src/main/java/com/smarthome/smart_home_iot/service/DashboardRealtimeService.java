@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class DashboardRealtimeService {
     public DashboardRealtimeResponse getRealtime(String deviceId) {
 
         List<RealtimeSensorStatus> sensors = new ArrayList<>();
-        LocalDateTime latestTime = null;
+        String latestTime = null;
 
         for (SensorType sensorType : SensorType.values()) {
 
@@ -41,11 +40,12 @@ public class DashboardRealtimeService {
 
             try {
                 switch (sensorType) {
+
                     case TEMPERATURE -> {
                         TemperatureRedisPayload payload =
                                 objectMapper.readValue(value, TemperatureRedisPayload.class);
 
-                        latestTime = updateLatest(latestTime, payload.getTimestamp());
+                        latestTime = payload.getTimestamp();
 
                         sensors.add(
                                 RealtimeSensorStatus.builder()
@@ -57,11 +57,12 @@ public class DashboardRealtimeService {
                                         .build()
                         );
                     }
+
                     case HUMIDITY -> {
                         HumidityRedisPayload payload =
                                 objectMapper.readValue(value, HumidityRedisPayload.class);
 
-                        latestTime = updateLatest(latestTime, payload.getTimestamp());
+                        latestTime = payload.getTimestamp();
 
                         sensors.add(
                                 RealtimeSensorStatus.builder()
@@ -73,11 +74,12 @@ public class DashboardRealtimeService {
                                         .build()
                         );
                     }
+
                     case AIR_QUALITY -> {
                         AirQualityRedisPayload payload =
                                 objectMapper.readValue(value, AirQualityRedisPayload.class);
 
-                        latestTime = updateLatest(latestTime, payload.getTimestamp());
+                        latestTime = payload.getTimestamp();
 
                         sensors.add(
                                 RealtimeSensorStatus.builder()
@@ -89,11 +91,12 @@ public class DashboardRealtimeService {
                                         .build()
                         );
                     }
+
                     case POWER -> {
                         PowerRedisPayload payload =
                                 objectMapper.readValue(value, PowerRedisPayload.class);
 
-                        latestTime = updateLatest(latestTime, payload.getTimestamp());
+                        latestTime = payload.getTimestamp();
 
                         sensors.add(
                                 RealtimeSensorStatus.builder()
@@ -105,11 +108,12 @@ public class DashboardRealtimeService {
                                         .build()
                         );
                     }
+
                     case BATTERY -> {
                         BatteryRedisPayload payload =
                                 objectMapper.readValue(value, BatteryRedisPayload.class);
 
-                        latestTime = updateLatest(latestTime, payload.getTimestamp());
+                        latestTime = payload.getTimestamp();
 
                         sensors.add(
                                 RealtimeSensorStatus.builder()
@@ -122,6 +126,7 @@ public class DashboardRealtimeService {
                         );
                     }
                 }
+
             } catch (Exception e) {
                 sensors.add(
                         RealtimeSensorStatus.builder()
@@ -138,11 +143,5 @@ public class DashboardRealtimeService {
                 .lastUpdatedAt(latestTime)
                 .sensors(sensors)
                 .build();
-    }
-
-    private LocalDateTime updateLatest(LocalDateTime current, LocalDateTime candidate) {
-        if (candidate == null) return current;
-        if (current == null || candidate.isAfter(current)) return candidate;
-        return current;
     }
 }
