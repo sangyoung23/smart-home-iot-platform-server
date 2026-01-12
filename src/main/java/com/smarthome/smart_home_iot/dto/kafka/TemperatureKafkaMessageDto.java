@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 public class TemperatureKafkaMessageDto {
     // 온도 DTO
 
-    private Long id; // 고유 id
     private String deviceId; // 디바이스 ID
     private Double temperature; // 온도
     private LocalDateTime timestamp; // 데이터가 측정된 시간

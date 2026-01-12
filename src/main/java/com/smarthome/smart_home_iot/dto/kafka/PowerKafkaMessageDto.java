@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 public class PowerKafkaMessageDto {
     // 전력 DTO
 
-    private Long id; // 고유 id
     private String deviceId; // 디바이스 ID
     private Double powerUsage; // 전력 사용량(W)
     private Double voltage; // 전압(V)
