@@ -17,7 +17,7 @@ public class SensorStatusDto {
 
     private String statusMessage;           // 상태 설명 (선택사항)
 
-    @JsonFormat(pattern = "yyyy-mm-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime lastDataTime;     // 마지막 집계 시간
 
     private Double currentValue;            // 현재 값 (평균값)

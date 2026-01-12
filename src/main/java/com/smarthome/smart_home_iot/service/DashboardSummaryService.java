@@ -84,7 +84,7 @@ public class DashboardSummaryService {
                 .normal(isNormal)
                 .statusMessage(message)
                 .lastDataTime(lastCreatedAt)
-                .currentValue(stats.getRepresentativeValue())
+                    .currentValue(stats.getRepresentativeValue())
                 .build();
     }
 }
