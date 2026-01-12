@@ -13,5 +13,5 @@ public class BatteryRedisPayload extends BaseSensorRedisPayload {
 
     private Double battery;
 
-    private LocalDateTime timestamp;
+    private String timestamp;
 }

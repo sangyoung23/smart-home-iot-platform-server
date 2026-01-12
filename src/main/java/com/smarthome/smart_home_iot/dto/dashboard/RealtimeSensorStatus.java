@@ -15,8 +15,7 @@ public class RealtimeSensorStatus {
 
     private Double currentValue;
 
-    @JsonFormat(pattern = "yyyy-mm-dd HH:mm:ss")
-    private LocalDateTime lastDataTime;
+    private String lastDataTime;
 
     private boolean normal;
 

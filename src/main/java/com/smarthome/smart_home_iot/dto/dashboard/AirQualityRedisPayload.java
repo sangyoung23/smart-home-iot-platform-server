@@ -21,5 +21,5 @@ public class AirQualityRedisPayload extends BaseSensorRedisPayload {
 
     private Boolean gasLeak;
 
-    private LocalDateTime timestamp;
+    private String timestamp;
 }

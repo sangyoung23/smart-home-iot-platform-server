@@ -13,8 +13,7 @@ public class DashboardRealtimeResponse {
 
     private String deviceId;
 
-    @JsonFormat(pattern = "yyyy-mm-dd HH:mm:ss")
-    private LocalDateTime lastUpdatedAt;
+    private String lastUpdatedAt;
 
     private List<RealtimeSensorStatus> sensors;
 }
