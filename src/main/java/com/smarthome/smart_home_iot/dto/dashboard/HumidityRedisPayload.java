@@ -13,5 +13,5 @@ public class HumidityRedisPayload extends BaseSensorRedisPayload {
 
     private Double humidity;
 
-    private LocalDateTime timestamp;
+    private String timestamp;
 }

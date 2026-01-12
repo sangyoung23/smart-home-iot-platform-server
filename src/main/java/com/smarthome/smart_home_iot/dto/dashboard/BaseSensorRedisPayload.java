@@ -7,6 +7,6 @@ import java.time.LocalDateTime;
 @Getter
 public abstract class BaseSensorRedisPayload {
     protected String deviceId;
-    protected LocalDateTime timestamp;
+    protected String timestamp;
 }
 

@@ -10,6 +10,11 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class BatteryService {
@@ -18,15 +23,18 @@ public class BatteryService {
     private final BatteryDocumentRepository batteryDocumentRepository;
     private final StringRedisTemplate stringRedisTemplate;
 
+    private static final ZoneId KST = ZoneId.of("Asia/Seoul");
+    private static final DateTimeFormatter FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @KafkaListener(topics = "battery-topic", groupId = "sensor-group")
     public void batteryConsume(String message) {
         try {
+            // 1. Kafka 메시지 역직렬화
+            BatteryKafkaMessageDto batteryDto =
+                    objectMapper.readValue(message, BatteryKafkaMessageDto.class);
 
-            // 1. Kafka 메세지 DTO 직렬화
-            BatteryKafkaMessageDto batteryDto = objectMapper.readValue(message, BatteryKafkaMessageDto.class);
-
-            // 2. MongoDB Document Raw 데이터 저장
+            // 2. MongoDB 저장 (원본 유지)
             BatteryDocument batteryDoc = BatteryDocument.builder()
                     .deviceId(batteryDto.getDeviceId())
                     .battery(batteryDto.getBattery())
@@ -35,11 +43,20 @@ public class BatteryService {
 
             batteryDocumentRepository.save(batteryDoc);
 
-            // 3. Redis 최신 상태 저장
-            String key = "sensor:battery:" + batteryDto.getDeviceId();
-            String value = objectMapper.writeValueAsString(batteryDto);
-            stringRedisTemplate.opsForValue().set(key, value);
+            // 3. Redis 저장용 데이터 가공 🔥
+            Map<String, Object> redisValue = new HashMap<>();
+            redisValue.put("deviceId", batteryDto.getDeviceId());
+            redisValue.put("battery", batteryDto.getBattery());
+            redisValue.put(
+                    "timestamp",
+                    batteryDto.getTimestamp()
+                            .atZone(KST)
+                            .format(FORMATTER)
+            );
 
+            String key = "sensor:battery:" + batteryDto.getDeviceId();
+            stringRedisTemplate.opsForValue()
+                    .set(key, objectMapper.writeValueAsString(redisValue));
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Battery JSON Parsing Error", e);

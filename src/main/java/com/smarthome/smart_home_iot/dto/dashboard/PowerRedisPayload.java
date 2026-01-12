@@ -19,5 +19,5 @@ public class PowerRedisPayload extends BaseSensorRedisPayload {
 
     private Double energyTotal;
 
-    private LocalDateTime timestamp;
+    private String timestamp;
 }

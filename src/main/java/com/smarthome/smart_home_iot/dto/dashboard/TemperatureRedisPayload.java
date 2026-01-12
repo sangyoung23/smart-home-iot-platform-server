@@ -13,5 +13,5 @@ public class TemperatureRedisPayload extends BaseSensorRedisPayload {
 
     private Double temperature;
 
-    private LocalDateTime timestamp;
+    private String timestamp;
 }
