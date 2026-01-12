@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 public class AirQualityKafkaMessageDto {
     // 공기질 DTO
 
-    private Long id; // 고유 id
     private String deviceId; // 디바이스 ID
     private Double pm10; // 미세먼지 PM10
     private Double pm25; // 미세먼지 PM2.5
