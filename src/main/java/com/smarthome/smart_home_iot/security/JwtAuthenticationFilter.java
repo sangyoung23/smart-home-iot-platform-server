@@ -35,15 +35,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = null;
         String username = null;
 
-        // 1️⃣ Authorization 헤더 확인
         if (header != null && header.startsWith("Bearer ")) {
             token = header.substring(7);
 
             try {
-                // 2️⃣ 토큰에서 username 추출
                 username = jwtUtil.getUsernameFromToken(token);
 
-                // 3️⃣ 토큰 유효성 검증
                 if (!jwtUtil.validateToken(token)) {
                     username = null;
                 }
@@ -53,14 +50,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        // 4️⃣ SecurityContext에 인증 객체 없으면 설정
         if (username != null &&
                 SecurityContextHolder.getContext().getAuthentication() == null) {
 
             String finalUsername = username;
             userRepository.findByUsername(username).ifPresent(user -> {
 
-                // 🔥 권한 설정 (필수)
                 List<SimpleGrantedAuthority> authorities =
                         List.of(new SimpleGrantedAuthority("ROLE_USER"));
 

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -29,7 +28,6 @@ public class TemperatureAggReader implements ItemReader<TemperatureAggResult> {
     private final MongoTemplate mongoTemplate;
     private Iterator<TemperatureAggResult> iterator;
 
-    // 🔥 처리 대상 원본 ID 저장용
     private List<ObjectId> processedIds = new ArrayList<>();
 
     @BeforeStep
@@ -106,7 +104,6 @@ public class TemperatureAggReader implements ItemReader<TemperatureAggResult> {
                         TemperatureAggResult.class
                 ).getMappedResults();
 
-        // 🔥 집계에 사용된 원본 ID 누적
         results.forEach(r ->
                 r.getDocIds().forEach(id -> processedIds.add(id))
         );

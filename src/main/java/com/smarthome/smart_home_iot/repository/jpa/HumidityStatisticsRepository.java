@@ -3,8 +3,6 @@ package com.smarthome.smart_home_iot.repository.jpa;
 import com.smarthome.smart_home_iot.domain.sensor.DailyStatisticsProjection;
 import com.smarthome.smart_home_iot.domain.sensor.HumidityStatistics;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

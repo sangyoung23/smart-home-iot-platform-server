@@ -14,18 +14,6 @@ spring:
 
   kafka:
     bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
-#    consumer:
-#      group-id: sensor-group
-#      auto-offset-reset: earliest
-#      enable-auto-commit: true
-#      properties:
-#        max.poll.records: 500
-#        retry.backoff.ms: 5000
-#    listener:
-#      missing-topics-fatal: false
-#    producer:
-#      retries: 5
-#      acks: all
 
 jwt:
   secret: ${SPRING_JWT_SECRET_KEY}

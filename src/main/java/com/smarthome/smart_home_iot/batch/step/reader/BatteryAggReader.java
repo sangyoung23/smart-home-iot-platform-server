@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,7 +29,6 @@ public class BatteryAggReader implements ItemReader<BatteryAggResult> {
     private final MongoTemplate mongoTemplate;
     private Iterator<BatteryAggResult> iterator;
 
-    // 🔥 처리 대상 원본 ID 저장용
     private List<ObjectId> processedIds = new ArrayList<>();
 
     @BeforeStep
@@ -67,8 +65,6 @@ public class BatteryAggReader implements ItemReader<BatteryAggResult> {
                         .and("isProcessed").is(false)
                 ),
 
-
-                // 🔥 timestamp → year/month/day/hour + _id 유지
                 project("deviceId", "battery", "timestamp")
                         .and("_id").as("docId")
                         .and(DateOperators.Year.yearOf("timestamp")
@@ -84,7 +80,6 @@ public class BatteryAggReader implements ItemReader<BatteryAggResult> {
                                 .withTimezone(DateOperators.Timezone.valueOf("Asia/Seoul")))
                         .as("hour"),
 
-                // 🔥 device + 날짜 + hour 기준 집계
                 group("deviceId", "year", "month", "day", "hour")
                         .avg("battery").as("avgBattery")
                         .min("battery").as("minBattery")
@@ -92,7 +87,6 @@ public class BatteryAggReader implements ItemReader<BatteryAggResult> {
                         .count().as("sampleCount")
                         .addToSet("docId").as("docIds"),
 
-                // 🔥 statDate 반드시 생성
                 project("avgBattery", "minBattery", "maxBattery", "sampleCount")
                         .and("_id.deviceId").as("deviceId")
                         .and("_id.hour").as("statHour")
@@ -113,7 +107,6 @@ public class BatteryAggReader implements ItemReader<BatteryAggResult> {
                         BatteryAggResult.class
                 ).getMappedResults();
 
-        // 🔥 집계에 사용된 원본 ID 누적
         results.forEach(r ->
                 r.getDocIds().forEach(id -> processedIds.add(id))
         );

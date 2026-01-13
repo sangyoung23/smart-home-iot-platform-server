@@ -15,7 +15,7 @@ public class JwtUtil {
     private String secretKey;
 
     @Value("${jwt.expiration-ms}")
-    private long expirationMs; // 토큰 만료 시간
+    private long expirationMs;
 
     // 토큰 생성
     public String generateToken(String username, String role) {
@@ -43,7 +43,7 @@ public class JwtUtil {
             Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
-            return false; // 토큰 유효하지 않음
+            return false;
         }
     }
 }

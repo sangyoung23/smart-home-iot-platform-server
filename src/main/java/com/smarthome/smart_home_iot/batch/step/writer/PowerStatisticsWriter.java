@@ -24,7 +24,7 @@ public class PowerStatisticsWriter implements ItemWriter<PowerStatistics> {
 
     @Override
     public void write(Chunk<? extends PowerStatistics> chunk) {
-        // 1️⃣ 통계 저장
+
         for (PowerStatistics stat : chunk.getItems()) {
             statisticsRepository.findByDeviceIdAndStatDateAndStatHour(
                     stat.getDeviceId(),
@@ -39,7 +39,6 @@ public class PowerStatisticsWriter implements ItemWriter<PowerStatistics> {
             );
         }
 
-        // 2️⃣ 원본 데이터 처리 완료
         StepExecution stepExecution =
                 StepSynchronizationManager.getContext().getStepExecution();
 

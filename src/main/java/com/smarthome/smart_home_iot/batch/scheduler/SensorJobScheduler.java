@@ -26,11 +26,9 @@ public class SensorJobScheduler {
     private final BatteryDocumentRepository batteryRepo;
     private final AirQualityDocumentRepository airQualityRepo;
 
-    // 매일 자정(00:00:00)41₩   ㅂㄴㅇ류
     @Scheduled(cron = "0 0 0 * * *")
     public void runSensorJob() {
 
-        // 1️⃣ 처리할 데이터 없으면 스킵
         if (!hasBatchData()) {
             log.info("배치 실행 대상 데이터 없음, 스킵");
             return;

@@ -1,10 +1,8 @@
 package com.smarthome.smart_home_iot.dto.dashboard;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter

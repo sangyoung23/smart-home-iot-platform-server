@@ -1,6 +1,5 @@
 package com.smarthome.smart_home_iot.config;
 
-import com.zaxxer.hikari.HikariDataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.support.DefaultBatchConfiguration;

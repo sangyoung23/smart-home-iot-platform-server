@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @Table(
         name = "tb_battery_statistics",
         uniqueConstraints = {
-                // device_id + stat_date + stat_hour 가 유일하도록 설정
                 @UniqueConstraint(columnNames = {"device_id", "stat_date", "stat_hour"})
         }
 )

@@ -24,24 +24,21 @@ public class HumidityStatisticsWriter implements ItemWriter<HumidityStatistics> 
 
     @Override
     public void write(Chunk<? extends HumidityStatistics> chunk) {
-        // 1️⃣ 통계 저장
+
         for (HumidityStatistics stat : chunk.getItems()) {
             statisticsRepository.findByDeviceIdAndStatDateAndStatHour(
                     stat.getDeviceId(),
                     stat.getStatDate(),
                     stat.getStatHour()
             ).ifPresentOrElse(
-                    // 같은 시간대 집계 데이터가 있으면 update
                     existing -> {
                         existing.merge(stat);
                         statisticsRepository.save(existing);
                     },
-                    // 같은 시간대 집계 데이터가 없으면 insert
                     () -> statisticsRepository.save(stat)
             );
         }
 
-        // 2️⃣ 원본 데이터 처리 완료
         StepExecution stepExecution =
                 StepSynchronizationManager.getContext().getStepExecution();
 

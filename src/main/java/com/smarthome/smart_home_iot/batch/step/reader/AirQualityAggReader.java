@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,7 +29,6 @@ public class AirQualityAggReader implements ItemReader<AirQualityAggResult> {
     private final MongoTemplate mongoTemplate;
     private Iterator<AirQualityAggResult> iterator;
 
-    // 🔥 처리 대상 원본 ID 저장용
     private List<ObjectId> processedIds = new ArrayList<>();
 
     @BeforeStep
@@ -67,7 +65,6 @@ public class AirQualityAggReader implements ItemReader<AirQualityAggResult> {
                         .and("isProcessed").is(false)
                 ),
 
-                // 🔥 timestamp → year/month/day/hour + _id 유지
                 project(
                         "deviceId",
                         "pm10", "pm25", "co2", "voc",
@@ -88,7 +85,6 @@ public class AirQualityAggReader implements ItemReader<AirQualityAggResult> {
                                 .withTimezone(DateOperators.Timezone.valueOf("Asia/Seoul")))
                         .as("hour"),
 
-                // 🔥 device + 날짜 + hour 기준 집계
                 group("deviceId", "year", "month", "day", "hour")
                         .avg("pm10").as("avgPm10")
                         .avg("pm25").as("avgPm25")
@@ -100,7 +96,6 @@ public class AirQualityAggReader implements ItemReader<AirQualityAggResult> {
                         .count().as("sampleCount")
                         .addToSet("docId").as("docIds"),
 
-                // 🔥 statDate 반드시 생성
                 project(
                         "avgPm10", "avgPm25", "avgCo2", "avgVoc",
                         "avgLight", "avgSmokeLevel", "gasLeakCount", "sampleCount"
@@ -124,7 +119,6 @@ public class AirQualityAggReader implements ItemReader<AirQualityAggResult> {
                         AirQualityAggResult.class
                 ).getMappedResults();
 
-        // 🔥 집계에 사용된 원본 ID 누적
         results.forEach(r ->
                 r.getDocIds().forEach(id -> processedIds.add(id))
         );

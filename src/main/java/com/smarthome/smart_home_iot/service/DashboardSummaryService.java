@@ -22,8 +22,6 @@ public class DashboardSummaryService {
 
     private final StatisticsRepositoryHelper repositoryHelper;
 
-    private static final int AGGREGATION_DELAY_TOLERANCE_MINUTES = 10;
-
     public DashboardSummaryResponse getSummary() {
         // 1. 전체 센서 수
         long totalSensorCount = SensorType.values().length;
