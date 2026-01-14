@@ -1,5 +1,8 @@
 # 📘 Smart Home Backend
 
+<img width="2087" height="1255" alt="스마트 홈 IoT 시스템 구성도" src="https://github.com/user-attachments/assets/5017a9ed-574d-453c-8edc-2bc398c2cba5" />
+
+
 ## 1. 프로젝트 개요
 본 프로젝트는 **스마트홈 IoT 데이터 수집 및 통계 처리를 위한 백엔드 서버**입니다.  
 센서 데이터 수집, 통계 집계, 배치 처리 기능을 중심으로  
