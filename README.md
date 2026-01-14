@@ -28,6 +28,7 @@
 
 > 프로젝트 진행 과정에서는 Jira를 활용한 작업 단위 관리와  
 > Notion을 통한 설계 및 정리 문서화를 병행했습니다.
+<img width="1071" height="788" alt="스크린샷 2026-01-14 오후 4 55 31" src="https://github.com/user-attachments/assets/a9e5d48a-e05d-4ad1-b79d-26ef5cae3e6d" />
 
 ---
 
